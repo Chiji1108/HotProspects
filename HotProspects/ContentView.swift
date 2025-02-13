@@ -12,10 +12,11 @@ struct ContentView: View {
     @State private var output = ""
 
     var body: some View {
-        Text(output)
-            .task {
-                await fetchReadings()
-            }
+        Image(.example)
+            .interpolation(.none)
+            .resizable()
+            .scaledToFit()
+            .background(.black)
     }
 
     func fetchReadings() async {
