@@ -32,4 +32,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .modelContainer(for: Prospect.self, inMemory: true)
 }
