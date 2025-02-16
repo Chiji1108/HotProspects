@@ -36,6 +36,7 @@ struct MeView: View {
 
                 TextField("Email address", text: $emailAddress)
                     .textContentType(.emailAddress)
+                    .keyboardType(.emailAddress)
                     .font(.title)
 
                 Image(uiImage: generateQRCode(from: "\(name)\n\(emailAddress)"))
