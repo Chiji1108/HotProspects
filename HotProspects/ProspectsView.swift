@@ -13,6 +13,7 @@ struct ProspectsView: View {
     @Environment(\.modelContext) var modelContext
     @Query var prospects: [Prospect]
     @State private var isShowingScanner = false
+    @State private var selectedProspects = Set<Prospect>()
 
     func handleScan(result: Result<ScanResult, ScanError>) {
         isShowingScanner = false
@@ -59,20 +60,60 @@ struct ProspectsView: View {
         }
     }
 
+    func delete() {
+        for prospect in selectedProspects {
+            modelContext.delete(prospect)
+        }
+        selectedProspects.removeAll()
+    }
+
     var body: some View {
         NavigationStack {
-            List(prospects) { prospect in
+            List(prospects, selection: $selectedProspects) { prospect in
                 VStack(alignment: .leading) {
                     Text(prospect.name)
                         .font(.headline)
                     Text(prospect.emailAddress)
                         .foregroundStyle(.secondary)
                 }
+                .swipeActions {
+                    Button("Delete", systemImage: "trash", role: .destructive) {
+                        modelContext.delete(prospect)
+                    }
+                    if prospect.isContacted {
+                        Button("Mark Uncontacted", systemImage: "person.crop.circle.badge.xmark") {
+                            prospect.isContacted.toggle()
+                        }
+                        .tint(.blue)
+                    } else {
+                        Button(
+                            "Mark Contacted", systemImage: "person.crop.circle.fill.badge.checkmark"
+                        ) {
+                            prospect.isContacted.toggle()
+                        }
+                        .tint(.green)
+                    }
+                }
+                .tag(prospect)
             }
             .navigationTitle(title)
             .toolbar {
-                Button("Scan", systemImage: "qrcode.viewfinder") {
-                    isShowingScanner = true
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+                if selectedProspects.isEmpty == false {
+                    ToolbarItem(placement: .bottomBar) {
+                        Button(role: .destructive) {
+                            delete()
+                        } label: {
+                            Text("Delete Selected")
+                        }
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Scan", systemImage: "qrcode.viewfinder") {
+                        isShowingScanner = true
+                    }
                 }
             }
             .sheet(isPresented: $isShowingScanner) {
