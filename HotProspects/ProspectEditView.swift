@@ -11,6 +11,8 @@ struct ProspectEditView: View {
             TextField("Email", text: $prospect.emailAddress)
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
+
+            Toggle("Contacted", isOn: $prospect.isContacted)
         }
         .navigationTitle("Edit Prospect")
         .navigationBarTitleDisplayMode(.inline)

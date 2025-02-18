@@ -178,6 +178,9 @@ struct ProspectsView: View {
                     codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com",
                     completion: handleScan)
             }
+            .onAppear {
+                selectedProspects = []
+            }
         }
     }
 }
