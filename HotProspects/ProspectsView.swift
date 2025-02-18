@@ -108,22 +108,24 @@ struct ProspectsView: View {
         NavigationStack {
             List(prospects, selection: $selectedProspects) { prospect in
                 HStack {
-                    VStack(alignment: .leading) {
-                        Text(prospect.name)
-                            .font(.headline)
-                        Text(prospect.emailAddress)
-                            .foregroundStyle(.secondary)
-                    }
+                    NavigationLink {
+                        ProspectEditView(prospect: prospect)
+                    } label: {
+                        if filter == .none {
+                            Image(
+                                systemName: prospect.isContacted
+                                    ? "person.crop.circle.fill.badge.checkmark"
+                                    : "person.crop.circle.badge.xmark"
+                            )
+                            .foregroundStyle(prospect.isContacted ? .green : .blue)
+                        }
 
-                    Spacer()
-
-                    if filter == .none {
-                        Image(
-                            systemName: prospect.isContacted
-                                ? "person.crop.circle.fill.badge.checkmark"
-                                : "person.crop.circle.badge.xmark"
-                        )
-                        .foregroundStyle(prospect.isContacted ? .green : .blue)
+                        VStack(alignment: .leading) {
+                            Text(prospect.name)
+                                .font(.headline)
+                            Text(prospect.emailAddress)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .swipeActions {
