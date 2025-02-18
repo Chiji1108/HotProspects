@@ -16,3 +16,12 @@ struct ProspectEditView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
+#Preview {
+    NavigationStack {
+        ProspectEditView(
+            prospect: Prospect(name: "John Doe", emailAddress: "john@doe.com", isContacted: false)
+        )
+        .modelContainer(for: Prospect.self)
+    }
+}
