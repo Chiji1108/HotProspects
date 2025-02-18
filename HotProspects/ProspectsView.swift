@@ -73,7 +73,7 @@ struct ProspectsView: View {
 
     let filter: FilterType
 
-    init(filter: FilterType) {
+    init(filter: FilterType, sort: SortDescriptor<Prospect>) {
         self.filter = filter
 
         if filter != .none {
@@ -82,7 +82,9 @@ struct ProspectsView: View {
             _prospects = Query(
                 filter: #Predicate {
                     $0.isContacted == showContactedOnly
-                }, sort: [SortDescriptor(\Prospect.name)])
+                }, sort: [sort])
+        } else {
+            _prospects = Query(sort: [sort])
         }
     }
 
@@ -107,24 +109,21 @@ struct ProspectsView: View {
     var body: some View {
         NavigationStack {
             List(prospects, selection: $selectedProspects) { prospect in
-                HStack {
-                    NavigationLink {
-                        ProspectEditView(prospect: prospect)
-                    } label: {
-                        if filter == .none {
-                            Image(
-                                systemName: prospect.isContacted
-                                    ? "person.crop.circle.fill.badge.checkmark"
-                                    : "person.crop.circle.badge.xmark"
-                            )
-                            .foregroundStyle(prospect.isContacted ? .green : .blue)
-                        }
 
+                NavigationLink {
+                    ProspectEditView(prospect: prospect)
+                } label: {
+                    HStack {
                         VStack(alignment: .leading) {
                             Text(prospect.name)
                                 .font(.headline)
                             Text(prospect.emailAddress)
                                 .foregroundStyle(.secondary)
+                        }
+
+                        if filter == .none && prospect.isContacted {
+                            Spacer()
+                            Image(systemName: "checkmark.circle.fill")
                         }
                     }
                 }
@@ -186,6 +185,6 @@ struct ProspectsView: View {
 }
 
 #Preview {
-    ProspectsView(filter: .none)
+    ProspectsView(filter: .none, sort: SortDescriptor(\Prospect.name))
         .modelContainer(for: Prospect.self, inMemory: true)
 }
