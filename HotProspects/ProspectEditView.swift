@@ -22,6 +22,6 @@ struct ProspectEditView: View {
         ProspectEditView(
             prospect: Prospect(name: "John Doe", emailAddress: "john@doe.com", isContacted: false)
         )
-        .modelContainer(for: Prospect.self)
     }
+    .modelContainer(for: Prospect.self)
 }
